@@ -371,7 +371,7 @@ function typeText(elementNode, text, speed = 60) {
 
 
 
-function floatWords(text = 'Happy Birthday Gaurik 💫💖') {
+function floatWords(text = 'Happy Birthday Gauri 💫💖') {
   if (!text || typeof text !== 'string') return; // safety check
 
   const words = text.split(' ');
@@ -433,7 +433,9 @@ function floatWords(text = 'Happy Birthday Gaurik 💫💖') {
 
 unlockBtn.addEventListener('click', async () => {
   const code = passInput.value.trim().toLowerCase();
-  if (code === 'bihari_vempire') {
+  const secret = atob('YmloYXJpX3ZlbXBpcmU=');
+if (code === secret) {
+  
     wrongMsg.style.display = 'none';
     lockScreen.style.display = 'none';
     setTimeout(async () => {

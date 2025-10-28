@@ -1,0 +1,139 @@
+:root{
+  --bg-1:#0b0320;
+  --bg-2:#12021a;
+  --text:#fffdfc;
+  --gold:#ffd666;
+  --radius:20px;
+}
+
+*{box-sizing:border-box}
+html,body{
+  height:100%;
+  margin:0;
+  background:linear-gradient(120deg,var(--bg-1),var(--bg-2));
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;
+  color:var(--text);
+  overflow:hidden;
+}
+
+.app{display:flex;align-items:center;justify-content:center;height:100vh;padding:18px;position:relative}
+
+/* top controls */
+.topbar{position:fixed;left:16px;top:12px;display:flex;gap:10px;align-items:center;z-index:1200}
+.topbar .label{background:rgba(255,255,255,0.04);padding:8px 12px;border-radius:999px;font-weight:600}
+.music-toggle{background:rgba(0,0,0,0.36);padding:8px 12px;border-radius:999px;cursor:pointer;backdrop-filter:blur(6px)}
+
+/* card stage */
+.stage{width:92%;max-width:980px;height:82vh;perspective:2200px;position:relative}
+.card-wrap{width:100%;height:100%;transform-style:preserve-3d;transition:transform 720ms cubic-bezier(.2,.8,.2,1);position:relative}
+.face{position:absolute;inset:0;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;overflow:hidden;backface-visibility:hidden}
+.front{transform:rotateY(0deg);z-index:2}
+.back{transform:rotateY(180deg)}
+.card-wrap.flipped{transform:rotateY(-180deg)}
+
+/* card inner content */
+.inner{width:100%;height:100%;padding:36px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;box-shadow:0 30px 120px rgba(0,0,0,0.6);overflow:auto;border-radius:var(--radius)}
+.title{font-size:clamp(22px,6vw,44px);font-weight:800;text-align:center;text-transform:uppercase;color:var(--text);text-shadow:0 10px 30px rgba(0,0,0,0.6)}
+.cursive{font-family:"Pacifico","Brush Script MT";font-size:18px;color:var(--gold);text-shadow:0 6px 18px rgba(0,0,0,0.36)}
+.body{font-size:clamp(15px,2.2vw,18px);line-height:1.7;text-align:center;white-space:pre-wrap;opacity:0;transform:translateY(6px);animation:fadeIn 540ms ease forwards 120ms;color:rgba(255,250,250,0.98)}
+.sign{color:var(--gold);margin-top:12px}
+
+@keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
+
+/* labels */
+.sectionHead{position:fixed;left:16px;top:56px;font-size:14px;padding:8px 12px;border-radius:999px;background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));z-index:900}
+.progress{position:fixed;right:16px;top:16px;font-size:13px;padding:8px 12px;border-radius:999px;background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));z-index:900}
+
+/* themes */
+.theme-vempire{background:linear-gradient(160deg,#7a1630 0%, #b94b63 45%, #ff99b3 100%)}
+.theme-gauri{background:linear-gradient(160deg,#6b2f86 0%, #9b6bd1 45%, #d9c0ff 100%)}
+.theme-riddhi{background:linear-gradient(160deg,#05304a 0%, #0f6b8f 45%, #64b5d8 100%)}
+
+/* lock screen */
+#lockScreen{
+  position:fixed;inset:0;background:radial-gradient(circle,#12021a 0%,#000 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:3000;color:white;text-align:center;padding:22px;
+}
+#lockScreen h2{font-family:'Pacifico',cursive;color:#ffd666;margin:0 0 8px 0}
+#lockScreen input{padding:10px 14px;border:none;border-radius:12px;text-align:center;font-size:16px;outline:none;margin-top:10px;width:220px;}
+#lockScreen button{margin-top:14px;padding:8px 16px;border:none;border-radius:999px;background:#ffd666;color:#111;font-weight:700;cursor:pointer;}
+#wrongMsg{display:none;color:#ff8080;margin-top:10px;}
+
+/* intro */
+.intro{position:fixed;inset:0;background:linear-gradient(180deg,rgba(2,2,6,0.9),rgba(2,2,6,0.6));display:flex;align-items:center;justify-content:center;z-index:1500;flex-direction:column;padding:20px}
+.intro .box{background:linear-gradient(135deg,#2b042d,#311b4d);padding:28px;border-radius:16px;box-shadow:0 30px 120px rgba(0,0,0,0.6);text-align:center}
+.intro h1{margin:0;font-size:32px}
+.intro p{opacity:0.95}
+.intro button{margin-top:18px;padding:10px 18px;border-radius:999px;border:none;background:#ffd666;color:#111;font-weight:700;cursor:pointer}
+
+/* sparkle overlay */
+.sparkle{position:fixed;inset:0;z-index:40;pointer-events:none}
+
+/* responsive */
+@media (max-width:720px){ .stage{height:78vh} .body{font-size:15px} .title{font-size:clamp(18px,7vw,34px)} .intro h1{font-size:24px} }
+
+/* fireworks canvas */
+#fire{position:fixed;inset:0;pointer-events:none;z-index:1000}
+audio{display:none}
+
+
+
+
+/* --- Ensure floating words appear above everything --- */
+.floating-word {
+  position: fixed;
+  color: #ffd666;
+  font-family: "Brush Script MT", cursive;
+  font-size: 2rem;
+  pointer-events: none;
+  user-select: none;
+  opacity: 1;
+  transition: top 4s ease-out, opacity 4s ease-out;
+  z-index: 9999;
+}
+/* =========================
+   Sky shot / floating word styles
+   ========================= */
+.sky-word {
+  all: unset;
+  position: fixed !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  z-index: 999999 !important;
+  font-family: "Pacifico", cursive !important;
+  color: #ffd666 !important;
+  text-shadow: 0 0 10px rgba(255,214,102,0.9), 0 0 18px rgba(255,180,60,0.6) !important;
+  font-size: clamp(20px, 4vw, 44px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) translateY(0) scale(1) !important;
+  opacity: 1 !important;
+  transition: top 2.6s cubic-bezier(.2,.9,.2,1), transform 2.6s ease-out, opacity 2.6s ease-out !important;
+}
+
+
+/* =========================
+   Ensure typed main message is visible
+   ========================= */
+#mainMsg{
+  position: fixed !important;
+  left: 50% !important;
+  top: 10vh !important;
+  transform: translateX(-50%) !important;
+  z-index: 99999 !important;      /* above lockScreen/intro */
+  display: block !important;
+  color: #ffd666 !important;
+  font-family: "Pacifico", cursive !important;
+  font-size: clamp(22px, 5vw, 48px) !important;
+  text-shadow: 0 0 8px rgba(255,214,102,0.9), 0 0 20px rgba(255,200,60,0.6);
+  opacity: 1 !important;
+  pointer-events: none !important;
+  white-space: nowrap;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+#mainMsg.show {
+  animation: fadeInUp 600ms ease-out forwards;
+}

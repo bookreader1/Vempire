@@ -702,3 +702,55 @@ function startCountdown() {
 }
 
 startCountdown();
+
+
+
+
+
+const secret = atob('YmloYXJpX3ZlbXBpcmU=');
+
+
+const messagess = [
+  "😜 Nope! Gauri’s secret is safe for now!",
+  "🤨 Wrong again? Try harder, detective!",
+  "💔 Oops! Wrong code — Gauri wouldn’t approve 😅",
+  "🧠 Error 403: Cute hacker not authorized!",
+  "💡 Hint: Think about something *special* about April 13 😉",
+  "😏 Aree... itna bhi tough nahi hai!",
+  "😂 Wrong! But nice try, Sherlock!",
+  "🙃 You can’t guess this one that easy!",
+  "🔥 Almost there! (Just kidding, you’re not.)",
+  "👀 The code isn’t your birthday either, detective!",
+  "😎 Even Google couldn’t crack this one!",
+  "🥴 Error: brain not found. Try again.",
+  "🤔 Gauri’s laughing right now… try again!",
+  "🥶 That guess was colder than Antarctica.",
+  "🕵️‍♀️ Mission failed! But style maintained 😎",
+  "🤫 It’s something that only a true friend would know.",
+  "🤣 Wrong code! But I appreciate the effort.",
+  "💬 Hint: ‘No’… or is it? 😉",
+  "🪄 Nope! This magic spell doesn’t work here.",
+  "🎭 Plot twist: every wrong guess makes Gauri smile!"
+];
+function showRandomWrongMsg() {
+  const msg = messagess[Math.floor(Math.random() * messagess.length)];
+  const wrongMsgEl = document.getElementById("wrongMsg");
+  wrongMsgEl.textContent = msg;
+  wrongMsgEl.style.display = "block";
+  wrongMsgEl.style.animation = "shake 0.4s ease";
+  setTimeout(() => (wrongMsgEl.style.animation = ""), 400);
+}
+
+// Unlock logic
+document.getElementById("unlockBtn").addEventListener("click", () => {
+  const code = document.getElementById("passInput").value.trim();
+  const wrongMsgEl = document.getElementById("wrongMsg");
+
+  if (code === secret) {
+    document.getElementById("lockScreen").style.display = "none";
+  } else {
+    showRandomWrongMsg();
+    document.getElementById("passInput").value = "";
+  }
+});
+

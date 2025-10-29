@@ -608,6 +608,8 @@ function fireSkyWords(text) {
 
 
 
+
+
 // create a single sky-shot word that launches upward and removes itself
 function createSkyWord(word) {
   if (!word) return;
@@ -669,3 +671,34 @@ function stopSkyShow(){
     _skyShowInterval = null;
   }
 }
+
+
+
+function startCountdown() {
+  const countdownEl = document.getElementById('countdown');
+  const targetDate = new Date('April 13, 2026 00:00:00').getTime();
+
+  const update = () => {
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    if (distance <= 0) {
+      countdownEl.textContent = "🎉 It's Gauri's Day! Happy Birthday! 🎉";
+      clearInterval(interval);
+      return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    countdownEl.textContent =
+      `🎂 You are early→ ${days}d ${hours}h ${minutes}m ${seconds}s`;
+  };
+
+  update(); // first call
+  const interval = setInterval(update, 1000);
+}
+
+startCountdown();

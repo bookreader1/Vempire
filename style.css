@@ -153,3 +153,27 @@ audio{display:none}
   from { text-shadow: 0 0 8px #ffd666; }
   to { text-shadow: 0 0 25px #ff9cda, 0 0 35px #ffd666; }
 }
+
+
+
+#wrongMsg {
+  color: #ff9cda;
+  font-family: "Poppins", sans-serif;
+  margin-top: 10px;
+  display: none;
+  text-shadow: 0 0 10px #ff9cda, 0 0 20px #ffd666;
+  font-weight: 500;
+  animation: glowFade 1.2s ease-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+}
+
+@keyframes glowFade {
+  0% { opacity: 0; text-shadow: none; }
+  100% { opacity: 1; text-shadow: 0 0 10px #ff9cda, 0 0 25px #ffd666; }
+}

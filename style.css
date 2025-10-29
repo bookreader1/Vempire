@@ -137,3 +137,19 @@ audio{display:none}
 #mainMsg.show {
   animation: fadeInUp 600ms ease-out forwards;
 }
+
+
+
+.countdown {
+  font-size: 1.3rem;
+  color: #ffd666;
+  margin: 1em 0;
+  letter-spacing: 1px;
+  animation: glow 1.5s infinite alternate;
+  text-shadow: 0 0 10px #ffd666, 0 0 20px #ff9cda;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 8px #ffd666; }
+  to { text-shadow: 0 0 25px #ff9cda, 0 0 35px #ffd666; }
+}

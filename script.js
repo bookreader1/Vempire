@@ -34,7 +34,7 @@ function makeMessages(name,i){
   `${name} — Tu jitni mast hai, utna hi mast tera birthday bhi hona chahiye! 🥳🔥`,
   `${name} — Aaj tumhara din hai, toh drama sirf tumhara chalega. Queen mode on! 👑💅`,
   `${name} — Kuch log toh temporary WiFi connection the, par tu full-time hotspot ban gaya!" 🔥😂`,
-  `${name} — Happy Birthday to the person jiske bina group chats boring lagti hain. 📱😂`,
+  `${name} — Happy Birthday to the person jiske bina chats boring lagti hain. 📱😂`,
   `${name} — Khush raho, aur zyada khush raho — tension lene ka kaam mujhe de do. 😌💌`,
   `${name} — Tere jaisa dost milna ek blessing hai, aur tujhe tang karna meri hobby. 😋🎁`,
   `${name} — Aaj ka din sirf tumhare naam. Thoda cake mujhe bhi dena please. 😜🍰`,

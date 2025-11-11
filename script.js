@@ -294,7 +294,8 @@ function stopCelebration(){
   cancelAnimationFrame(anim);
   ctx.clearRect(0,0,fire.width,fire.height); btx.clearRect(0,0,balloons.width,balloons.height); stx.clearRect(0,0,sparkles.width,sparkles.height);
 }
-function triggerCelebration(){ startCelebration(); setTimeout(()=>stopCelebration(),6000); }
+function triggerCelebration(){ startCelebration(); //setTimeout(()=>stopCelebration(),6000);
+ }
 
 // confetti library fire (canvas-confetti)
 function fireConfettiLib(){

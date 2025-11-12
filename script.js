@@ -755,3 +755,56 @@ document.getElementById("unlockBtn").addEventListener("click", () => {
   }
 });
 
+
+
+
+let secretClicks = 0;
+
+// Create visible secret emoji zone
+const secretZone = document.createElement('div');
+secretZone.textContent = '🧛🏻‍♀️'; // vampire emoji
+secretZone.style.position = 'fixed';
+secretZone.style.bottom = '20px';
+secretZone.style.right = '20px';
+secretZone.style.fontSize = '2rem';
+secretZone.style.cursor = 'pointer';
+secretZone.style.transition = 'transform 0.3s ease';
+secretZone.style.userSelect = 'none';
+document.body.appendChild(secretZone);
+
+// Click handler
+secretZone.addEventListener('click', () => {
+  secretClicks++;
+
+  // Click animation
+  secretZone.style.transform = 'scale(1.3)';
+  setTimeout(() => secretZone.style.transform = 'scale(1)', 200);
+
+  // Trigger secret chamber function after 3 clicks
+ /* if (secretClicks === 3) {
+    console.log('🧛🏻‍♀️ Entering secret chamber!');
+    enterSecretChamber(); // optional animation / effects
+  }*/
+
+  // Open secret window after 5 clicks
+  if (secretClicks === 5) {
+    openSecretWindow();
+    secretClicks = 0; // reset counter
+  }
+});
+
+// Hover glow effect
+secretZone.addEventListener('mouseenter', () => {
+  secretZone.style.filter = 'drop-shadow(0 0 6px red)';
+});
+secretZone.addEventListener('mouseleave', () => {
+  secretZone.style.filter = 'none';
+});
+
+// Function to open secret HTML page
+function openSecretWindow() {
+  window.open('secret_window.html', '_blank', 'width=800,height=600');
+}
+
+// Optional: secret chamber animation
+

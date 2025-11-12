@@ -454,7 +454,7 @@ if (code === secret) {
       fireConfetti();
       startFloatingWords();
      // startSkyShow();
-      openSecretChamber();
+      showVampireAfterUnlock();
       ('Happy Birthday Gauri 💫💖');
       setTimeout(async () => {
        fireSkyWords('Happy Birthday Gauri 💫💖', 50);

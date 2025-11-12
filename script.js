@@ -454,6 +454,7 @@ if (code === secret) {
       fireConfetti();
       startFloatingWords();
      // startSkyShow();
+      openSecretChamber();
       ('Happy Birthday Gauri 💫💖');
       setTimeout(async () => {
        fireSkyWords('Happy Birthday Gauri 💫💖', 50);
@@ -758,53 +759,182 @@ document.getElementById("unlockBtn").addEventListener("click", () => {
 
 
 
-let secretClicks = 0;
+function showVampireAfterUnlock() {
+  const secretZone = document.createElement('div');
+  secretZone.textContent = '🧛🏻‍♀️';
+  secretZone.style.position = 'fixed';
+  secretZone.style.bottom = '20px';
+  secretZone.style.right = '20px';
+  secretZone.style.fontSize = '2rem';
+  secretZone.style.cursor = 'pointer';
+  secretZone.style.transition = 'transform 0.3s ease, filter 0.3s ease';
+  secretZone.style.zIndex = '9999';
+  secretZone.style.userSelect = 'none';
+  document.body.appendChild(secretZone);
 
-// Create visible secret emoji zone
-const secretZone = document.createElement('div');
-secretZone.textContent = '🧛🏻‍♀️'; // vampire emoji
-secretZone.style.position = 'fixed';
-secretZone.style.bottom = '20px';
-secretZone.style.right = '20px';
-secretZone.style.fontSize = '2rem';
-secretZone.style.cursor = 'pointer';
-secretZone.style.transition = 'transform 0.3s ease';
-secretZone.style.userSelect = 'none';
-document.body.appendChild(secretZone);
+  let secretClicks = 0;
+  secretZone.addEventListener('mouseenter', () => {
+    secretZone.style.filter = 'drop-shadow(0 0 6px red)';
+  });
+  secretZone.addEventListener('mouseleave', () => {
+    secretZone.style.filter = 'none';
+  });
 
-// Click handler
-secretZone.addEventListener('click', () => {
-  secretClicks++;
+  secretZone.addEventListener('click', () => {
+    secretClicks++;
+    secretZone.style.transform = 'scale(1.3)';
+    setTimeout(() => (secretZone.style.transform = 'scale(1)'), 200);
 
-  // Click animation
-  secretZone.style.transform = 'scale(1.3)';
-  setTimeout(() => secretZone.style.transform = 'scale(1)', 200);
-
-  // Trigger secret chamber function after 3 clicks
- /* if (secretClicks === 3) {
-    console.log('🧛🏻‍♀️ Entering secret chamber!');
-    enterSecretChamber(); // optional animation / effects
-  }*/
-
-  // Open secret window after 5 clicks
-  if (secretClicks === 5) {
-    openSecretWindow();
-    secretClicks = 0; // reset counter
-  }
-});
-
-// Hover glow effect
-secretZone.addEventListener('mouseenter', () => {
-  secretZone.style.filter = 'drop-shadow(0 0 6px red)';
-});
-secretZone.addEventListener('mouseleave', () => {
-  secretZone.style.filter = 'none';
-});
-
-// Function to open secret HTML page
-function openSecretWindow() {
-  window.open('secret_window.html', '_blank', 'width=800,height=600');
+    if (secretClicks === 5) {
+      secretClicks = 0;
+      openSecretChamber();
+    }
+  });
 }
 
-// Optional: secret chamber animation
+// 🌌 Secret Chamber function
+function openSecretChamber() {
+  const app = document.getElementById('app');
+  const music = document.getElementById('bgMusic');
+  if (music && !music.paused) music.pause();
 
+  app.style.transition = 'opacity 1s ease';
+  app.style.opacity = '0';
+
+  // Create chamber overlay
+  const chamber = document.createElement('div');
+  chamber.id = 'secretChamber';
+  chamber.style.position = 'fixed';
+  chamber.style.inset = '0';
+  chamber.style.background = 'radial-gradient(circle at center, #0b0320 0%, #000 100%)';
+  chamber.style.display = 'flex';
+  chamber.style.flexDirection = 'column';
+  chamber.style.justifyContent = 'center';
+  chamber.style.alignItems = 'center';
+  chamber.style.textAlign = 'center';
+  chamber.style.color = '#ffd666';
+  chamber.style.fontFamily = "'Poppins', sans-serif";
+  chamber.style.zIndex = '99999';
+  chamber.style.opacity = '0';
+  chamber.style.transition = 'opacity 1s ease';
+  document.body.appendChild(chamber);
+
+  // 🌟 Stars
+  for (let i = 0; i < 100; i++) {
+    const star = document.createElement('div');
+    star.classList.add('star');
+    star.style.position = 'absolute';
+    star.style.background = 'white';
+    star.style.width = '2px';
+    star.style.height = '2px';
+    star.style.borderRadius = '50%';
+    star.style.left = Math.random() * 100 + 'vw';
+    star.style.top = Math.random() * 100 + 'vh';
+    star.style.opacity = 0.8;
+    star.style.animation = `twinkle 4s infinite ease-in-out`;
+    star.style.animationDelay = Math.random() * 4 + 's';
+    chamber.appendChild(star);
+  }
+
+  // ✨ Title and message
+  chamber.innerHTML += `
+    <h1 style="font-size:2.2em;text-shadow:0 0 10px #ffd666,0 0 30px #ff9cda;
+      animation:glowText 2s ease-in-out infinite alternate;z-index:10;">🌙</h1>
+  
+    
+   <!-- 🔘 Buttons container -->
+<div id="buttonContainer">
+  <button id="exitChamber">Return to the Book 📖</button>
+  <button id="musicToggle2">🔇 Pause Music</button>
+</div>
+    <audio id="bgMusic2" loop preload="auto">
+      <source src="gauri.mp3" type="audio/mpeg">
+    </audio>
+  `;
+
+  // Fade in chamber
+  setTimeout(() => (chamber.style.opacity = '1'), 200);
+
+  // 🎵 Music controls inside chamber
+  const bgMusic2 = document.getElementById('bgMusic2');
+  const toggleBtn2 = document.getElementById('musicToggle2');
+  bgMusic2.play().catch(() => console.warn("Tap required"));
+
+  toggleBtn2.addEventListener('click', () => {
+    if (bgMusic2.paused) {
+      bgMusic2.play();
+      toggleBtn2.textContent = "🔇 Pause Music";
+    } else {
+      bgMusic2.pause();
+      toggleBtn2.textContent = "🔊 Play Music";
+    }
+  });
+
+  // 💫 Ripple + emoji effect
+  function createMagic(x, y) {
+    const ripple = document.createElement('div');
+    ripple.classList.add('ripple');
+    ripple.style.position = 'absolute';
+    ripple.style.borderRadius = '50%';
+    ripple.style.width = '0';
+    ripple.style.height = '0';
+    ripple.style.background = 'radial-gradient(circle, rgba(255,214,102,0.6) 10%, transparent 70%)';
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+    ripple.style.transform = 'translate(-50%, -50%)';
+    ripple.style.pointerEvents = 'none';
+    ripple.style.animation = 'rippleExpand 1s ease-out forwards';
+    chamber.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 1000);
+
+    const emojis = ['✨','🌙','💫','⭐','🪄'];
+    const emoji = document.createElement('div');
+    emoji.classList.add('emoji');
+    emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    emoji.style.position = 'absolute';
+    emoji.style.left = `${x}px`;
+    emoji.style.top = `${y}px`;
+    emoji.style.fontSize = '1.8em';
+    emoji.style.pointerEvents = 'none';
+    emoji.style.animation = 'floatUp 1.5s ease-out forwards';
+    chamber.appendChild(emoji);
+    setTimeout(() => emoji.remove(), 1500);
+  }
+
+  chamber.addEventListener('click', evt => createMagic(evt.clientX, evt.clientY));
+  chamber.addEventListener('touchstart', evt => {
+    const t = evt.touches[0];
+    createMagic(t.clientX, t.clientY);
+  });
+
+  // Return button
+  document.getElementById('exitChamber').addEventListener('click', () => {
+    chamber.style.opacity = '0';
+    setTimeout(() => chamber.remove(), 800);
+    app.style.opacity = '1';
+    if (music) music.play();
+  });
+
+  // CSS Animations
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes twinkle {
+      0%,100%{opacity:0.2;transform:translateY(0);}
+      50%{opacity:1;transform:translateY(-10px);}
+    }
+    @keyframes rippleExpand {
+      to {width:200px;height:200px;opacity:0;}
+    }
+    @keyframes floatUp {
+      0%{transform:translateY(0) scale(1);opacity:1;}
+      100%{transform:translateY(-80px) scale(1.5);opacity:0;}
+    }
+    @keyframes glowText {
+      from{text-shadow:0 0 10px #ffd666;}
+      to{text-shadow:0 0 25px #ff9cda,0 0 40px #ffd666;}
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// 💡 Call this AFTER user unlocks (for example, inside your unlock success code)

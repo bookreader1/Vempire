@@ -434,7 +434,9 @@ function floatWords(text = 'Happy Birthday Gauri 💫💖') {
 
 unlockBtn.addEventListener('click', async () => {
   const code = passInput.value.trim().toLowerCase();
-  const secret = atob('YmloYXJpX3ZlbXBpcmU=');
+//  const secret = atob('YmloYXJpX3ZlbXBpcmU=');
+  const secret = atob('YmloYXJpX3ZlbXBpcmU1Njc=');
+  //YmloYXJpX3ZlbXBpcmU1Njc=
 if (code === secret) {
   
     wrongMsg.style.display = 'none';
@@ -709,7 +711,7 @@ startCountdown();
 
 
 
-const secret = atob('YmloYXJpX3ZlbXBpcmU=');
+const secret = atob('YmloYXJpX3ZlbXBpcmU1Njc=');
 
 
 const messagess = [

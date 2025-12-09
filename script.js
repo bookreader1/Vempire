@@ -457,6 +457,7 @@ if (code === secret) {
       startFloatingWords();
      // startSkyShow();
       showVampireAfterUnlock();
+      activateSecretZone();
       ('Happy Birthday Gauri 💫💖');
       setTimeout(async () => {
        fireSkyWords('Happy Birthday Gauri 💫💖', 50);
@@ -940,3 +941,136 @@ function openSecretChamber() {
 }
 
 // 💡 Call this AFTER user unlocks (for example, inside your unlock success code)
+
+
+/* horrer one for opening */
+// Elements
+const openSurpriseBtn = document.getElementById("openSurpriseBtn");
+const closeSurpriseBtn = document.getElementById("closeSurpriseBtn");
+const surpriseOverlay = document.getElementById("surpriseOverlay");
+const surpriseFrame = document.getElementById("surpriseFrame");
+const parentMusic = document.getElementById("bgMusic"); // your original music
+
+openSurpriseBtn.addEventListener("click", () => {
+  // Pause parent music
+  if (parentMusic && !parentMusic.paused) parentMusic.pause();
+
+  // Load iframe
+  surpriseFrame.src = "https://bookreader1.github.io/hbd/";
+
+  // Show overlay with fade
+  surpriseOverlay.classList.add("show");
+});
+
+closeSurpriseBtn.addEventListener("click", () => {
+  // Fade out overlay
+  surpriseOverlay.classList.remove("show");
+
+  // Clear iframe after fade
+  setTimeout(() => {
+    surpriseFrame.src = "";
+  }, 500); // match CSS transition duration
+
+  // Resume parent music
+  if (parentMusic) parentMusic.play();
+});
+
+
+openSurpriseBtn.addEventListener("click", () => {
+  document.body.classList.add("no-scroll");
+  surpriseFrame.src = "https://bookreader1.github.io/hbd/";
+  surpriseOverlay.classList.add("show");
+});
+
+closeSurpriseBtn.addEventListener("click", () => {
+  surpriseOverlay.classList.remove("show");
+  setTimeout(() => surpriseFrame.src = "", 500);
+  document.body.classList.remove("no-scroll");
+  if (parentMusic) parentMusic.play();
+});
+
+
+/* horrer one button */
+// const openSurpriseBtna = document.getElementById("openSurpriseBtn");
+
+// // Hide by default (forced)
+// openSurpriseBtna.style.setProperty("display", "none", "important");
+
+// // Secret zone (top-left)
+// const secretZone = {
+//   xMax: 100,
+//   yMax: 100,
+//   clicksRequired: 5,
+//   clicks: 0,
+//   unlocked: false
+// };
+
+// document.addEventListener("click", (e) => {
+
+//   // Stop if already unlocked
+//   if (secretZone.unlocked) return;
+
+//   // Inside secret area?
+//   if (e.clientX <= secretZone.xMax && e.clientY <= secretZone.yMax) {
+//     secretZone.clicks++;
+
+//     if (secretZone.clicks === secretZone.clicksRequired) {
+
+//       // Make button PERMANENTLY visible
+//       openSurpriseBtna.style.setProperty("display", "block", "important");
+
+//       // Fade-in animation
+//       openSurpriseBtna.animate(
+//         [{ opacity: 0 }, { opacity: 1 }],
+//         { duration: 500 }
+//       );
+
+//       secretZone.unlocked = true;
+
+//       console.log("Secret Button Unlocked!");
+//     }
+//   } else {
+//     secretZone.clicks = 0; // reset
+//   }
+// });
+
+// // Safety: every 300ms force the button to stay visible after unlock
+// setInterval(() => {
+//   if (secretZone.unlocked) {
+//     openSurpriseBtna.style.setProperty("display", "block", "important");
+//   }
+// }, 300);
+
+
+function activateSecretZone() {
+  const openSurpriseBtn = document.getElementById("openSurpriseBtn");
+  openSurpriseBtn.style.display = "none"; 
+
+  const secretZone = {
+    xMax: 100,       // 100px from left
+    yMax: 100,       // 100px from bottom
+    clicksRequired: 5,
+    clicks: 0
+  };
+
+  document.addEventListener("click", function revealButton(e) {
+    const windowHeight = window.innerHeight;
+
+    // Detect click inside bottom-left secret zone
+    if (e.clientX <= secretZone.xMax && e.clientY >= windowHeight - secretZone.yMax) {
+      secretZone.clicks++;
+
+      if (secretZone.clicks === secretZone.clicksRequired) {
+        openSurpriseBtn.style.display = "block";
+        secretZone.clicks = 0;
+
+        openSurpriseBtn.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500 });
+
+        // Remove listener so it doesn't trigger again
+        document.removeEventListener("click", revealButton);
+      }
+    } else {
+      secretZone.clicks = 0;
+    }
+  });
+}

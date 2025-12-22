@@ -1,18 +1,11 @@
 // -----------------------------
-// Utilities & state
+// 1. Utilities & Content
 // -----------------------------
 const slides = [];
-function makeMessages(name,i){
-  /*const variants=[
-    `${name} — On this day I wish your mornings gentle beginnings, your afternoons small discoveries, and your nights soft satisfaction. May simple joys find you often. ✨`,
-    `${name} — You notice the small things and make them matter. I hope this year returns that care to you in kinder measures—warm moments, steady friendships, and calm mornings. 🌙`,
-    `${name} — I want your cake to be delightfully over the top and your laugh to echo. Promise a silly dance and save the slice with extra sprinkles. 🥳`,
-    `${name} — Thank you for the quiet help, the jokes that landed, and the comforting presence you offer. I'm grateful for you beyond what these lines can hold. 🙏`,
-    `${name} — You glow quietly, like a light that lingers after the room has emptied. May this year bring mirrors of that glow—people and moments that reflect your warmth. 🌟`,
-    `${name} — When distances stretch, memories grow louder and sweeter. Thank you for being that steady, kind voice — here’s to more late-night talks and small shared jokes. 🤍`
-  ];*/
+
+function makeMessages(name, i) {
   const variants = [
-  `${name} — Aaj ka din sirf tumhara hai! May your smile shine brighter than your birthday candles. 🎂✨`,
+    `${name} — Aaj ka din sirf tumhara hai! May your smile shine brighter than your birthday candles. 🎂✨`,
   `${name} — Tum haste hue sabse ache lagte ho. Khush raho hamesha, duniya ki saari muskurahatein tumhe mil jaayein. 😊💖`,
   `${name} — Happy Birthday to the one who can make even boring days funny! Tera humor priceless hai. 😂🎉`,
   `${name} — Life thodi filmy hai, par tu uska best character hai! Hero vibes all the way. 🎬💫`,
@@ -50,52 +43,54 @@ function makeMessages(name,i){
   `${name} — Tum jitne pyaare ho, utni hi acchi cheezein tumhare saath ho. ❤️🍀`,
   `${name} — Birthday wish: tumhara dil hamesha itna hi soft rahe — jaise freshly baked cake. 🎂💗`,
   `${name} — Duniya ke sabse cute insan ko Happy Birthday! May your sparkle never fade. 💖✨`
-];
-  return variants[i%variants.length] + "\n\n— From Kirtan ✨";
+  ];
+  return variants[i % variants.length] + "\n\n— From Kirtan ✨";
 }
 
-// build slides (keeping original counts)
-slides.push({theme:'vempire', title:'Happy Birthday Gauri ✨', body:'Happy Birthday Gauri — flip to read wishes, thank-you notes, and small reflections.'});
-for(let i=0;i<12;i++) slides.push({theme:'vempire', title:'Vempire', body: makeMessages('Vempire', i)});
-for(let i=13;i<24;i++) slides.push({theme:'gauri', title:'Gauri', body: makeMessages('Gauri', i)});
-for(let i=25;i<38;i++) slides.push({theme:'riddhi', title:'Riddhi', body: makeMessages('Riddhi', i)});
-slides.push({theme:'gauri', title:'With love', body:'With love — May this year be kind to you, and may you be celebrated every day. — From Kirtan ✨'});
+// Build slides
+slides.push({ theme: 'vempire', title: 'Happy Birthday Gauri ✨', body: 'Happy Birthday Gauri — flip to read wishes, thank-you notes, and small reflections.' });
+for (let i = 0; i < 12; i++) slides.push({ theme: 'vempire', title: 'Vempire', body: makeMessages('Vempire', i) });
+for (let i = 13; i < 24; i++) slides.push({ theme: 'gauri', title: 'Gauri', body: makeMessages('Gauri', i) });
+for (let i = 25; i < 38; i++) slides.push({ theme: 'riddhi', title: 'Riddhi', body: makeMessages('Riddhi', i) });
+slides.push({ theme: 'gauri', title: 'With love', body: 'With love — May this year be kind to you, and may you be celebrated every day. — From Kirtan ✨' });
 
-// DOM refs
-const cardWrap    = document.getElementById('cardWrap');
-const frontInner  = document.getElementById('frontInner');
-const backInner   = document.getElementById('backInner');
+// -----------------------------
+// 2. DOM Elements & State
+// -----------------------------
+const cardWrap = document.getElementById('cardWrap');
+const frontInner = document.getElementById('frontInner');
+const backInner = document.getElementById('backInner');
 const sectionHead = document.getElementById('sectionHead');
-const progress    = document.getElementById('progress');
-const intro       = document.getElementById('intro');
-const startBtn    = document.getElementById('startBtn');
+const progress = document.getElementById('progress');
+const intro = document.getElementById('intro');
+const startBtn = document.getElementById('startBtn');
 const musicToggle = document.getElementById('musicToggle');
-const bgMusic     = document.getElementById('bgMusic');
-const lockScreen  = document.getElementById('lockScreen');
-const unlockBtn   = document.getElementById('unlockBtn');
-const passInput   = document.getElementById('passInput');
-const wrongMsg    = document.getElementById('wrongMsg');
-const mainMsg     = document.getElementById('mainMsg');
+const bgMusic = document.getElementById('bgMusic');
+const lockScreen = document.getElementById('lockScreen');
+const unlockBtn = document.getElementById('unlockBtn');
+const passInput = document.getElementById('passInput');
+const wrongMsg = document.getElementById('wrongMsg');
+const mainMsg = document.getElementById('mainMsg');
 
 let index = 0;
 let animating = false;
-let flipDirection = null; // 'next' or 'prev'
+let flipDirection = null;
 let musicPlayed = false;
 let heartsInterval = null;
 let celebrationTicker = null;
 let raf = null;
 
 // -----------------------------
-// Apply content helper
+// 3. Book Logic
 // -----------------------------
-function applyToInner(slide, inner){
-  inner.classList.remove('theme-vempire','theme-gauri','theme-riddhi');
+function applyToInner(slide, inner) {
+  inner.classList.remove('theme-vempire', 'theme-gauri', 'theme-riddhi');
   inner.classList.add('theme-' + slide.theme);
   inner.querySelector('.title').textContent = slide.title;
   inner.querySelector('.cursive').textContent = slide.title;
   inner.querySelector('.body').textContent = slide.body;
   inner.querySelector('.sign').textContent = '— From Kirtan ✨';
-  // reset body animation
+  
   const bodyEl = inner.querySelector('.body');
   bodyEl.style.opacity = 0;
   bodyEl.style.transform = 'translateY(6px)';
@@ -103,100 +98,7 @@ function applyToInner(slide, inner){
   bodyEl.style.animation = 'fadeIn 540ms ease forwards 120ms';
 }
 
-// initial render
-applyToInner(slides[0], frontInner);
-applyToInner(slides[1], backInner);
-updateUI();
-
-// -----------------------------
-// Flip logic (smooth, transitionend-based)
-// -----------------------------
-cardWrap.addEventListener('transitionend', (ev) => {
-  if (ev.propertyName !== 'transform') return;
-  // If we just finished the rotation (i.e., cardWrap has 'flipped'), then update content.
-  if (cardWrap.classList.contains('flipped') && flipDirection === 'next') {
-    // after full flip, advance index and swap content, then snap back
-    index = (index + 1) % slides.length;
-    applyToInner(slides[index], frontInner);
-    applyToInner(slides[(index + 1) % slides.length], backInner);
-    // snap back without transition
-    cardWrap.style.transition = 'none';
-    cardWrap.classList.remove('flipped');
-    // force reflow then restore transition
-    void cardWrap.offsetWidth;
-    cardWrap.style.transition = '';
-    animating = false;
-    flipDirection = null;
-    updateUI();
-    maybeTriggerCelebration();
-    startFloatingWords();
-    floatWords();
-    return;
-  }
-
-  // For prev: we flip by preparing back as previous and then flipping back to front.
-  if (cardWrap.classList.contains('flipped') && flipDirection === 'prev') {
-    // We're showing the prepared back (prev) face — now snap to state with no flipped class and keep prev as front.
-    index = (index - 1 + slides.length) % slides.length;
-    applyToInner(slides[index], frontInner);
-    applyToInner(slides[(index + 1) % slides.length], backInner);
-    cardWrap.style.transition = 'none';
-    cardWrap.classList.remove('flipped');
-    void cardWrap.offsetWidth;
-    cardWrap.style.transition = '';
-    animating = false;
-    flipDirection = null;
-    updateUI();
-    maybeTriggerCelebration();
-    return;
-  }
-});
-
-// show next page
-function showNext(){
-  if (animating) return;
-  animating = true;
-  flipDirection = 'next';
-  // animate flip to reveal back
-  cardWrap.classList.add('flipped');
-}
-
-// show previous page
-function showPrev(){
-  if (animating) return;
-  animating = true;
-  flipDirection = 'prev';
-  // prepare back to show previous page content before flip
-  const prevIndex = (index - 1 + slides.length) % slides.length;
-  applyToInner(slides[prevIndex], backInner);
-  applyToInner(slides[index], frontInner);
-  // small delay to ensure styles applied
-  requestAnimationFrame(() => {
-    // trigger flip (rotates to show back)
-    cardWrap.classList.add('flipped');
-  });
-}
-
-// keyboard and click/touch controls
-const stage = document.getElementById('stage');
-stage.addEventListener('click', (e) => {
-  const r = stage.getBoundingClientRect();
-  const x = e.clientX - r.left;
-  if (x < r.width * 0.36) showPrev(); else showNext();
-});
-let sx = 0;
-stage.addEventListener('touchstart', e => sx = e.changedTouches[0].screenX);
-stage.addEventListener('touchend', e => {
-  const ex = e.changedTouches[0].screenX;
-  const dx = ex - sx;
-  if (dx > 40) showPrev(); else if (dx < -40) showNext();
-});
-window.addEventListener('keydown', e => { if (e.key === 'ArrowRight') showNext(); if (e.key === 'ArrowLeft') showPrev(); });
-
-// -----------------------------
-// UI updates and celebration triggers
-// -----------------------------
-function updateUI(){
+function updateUI() {
   progress.textContent = `${index + 1} / ${slides.length}`;
   if (index === 0) sectionHead.textContent = 'Intro';
   else if (index >= 1 && index <= 12) sectionHead.textContent = 'Vempire ✨';
@@ -204,6 +106,75 @@ function updateUI(){
   else if (index >= 25 && index <= 36) sectionHead.textContent = 'Riddhi ✨';
   else sectionHead.textContent = 'With love ✨';
 }
+
+function showNext() {
+  if (animating) return;
+  animating = true;
+  flipDirection = 'next';
+  cardWrap.classList.add('flipped');
+}
+
+function showPrev() {
+  if (animating) return;
+  animating = true;
+  flipDirection = 'prev';
+  const prevIndex = (index - 1 + slides.length) % slides.length;
+  applyToInner(slides[prevIndex], backInner);
+  applyToInner(slides[index], frontInner);
+  requestAnimationFrame(() => {
+    cardWrap.classList.add('flipped');
+  });
+}
+
+cardWrap.addEventListener('transitionend', (ev) => {
+  if (ev.propertyName !== 'transform') return;
+  if (cardWrap.classList.contains('flipped')) {
+    if (flipDirection === 'next') {
+      index = (index + 1) % slides.length;
+      applyToInner(slides[index], frontInner);
+      applyToInner(slides[(index + 1) % slides.length], backInner);
+    } else if (flipDirection === 'prev') {
+      index = (index - 1 + slides.length) % slides.length;
+      applyToInner(slides[index], frontInner);
+      applyToInner(slides[(index + 1) % slides.length], backInner);
+    }
+    cardWrap.style.transition = 'none';
+    cardWrap.classList.remove('flipped');
+    void cardWrap.offsetWidth;
+    cardWrap.style.transition = '';
+    animating = false;
+    flipDirection = null;
+    updateUI();
+    maybeTriggerCelebration();
+    startFloatingWords();
+  }
+});
+
+// Controls
+const stage = document.getElementById('stage');
+stage.addEventListener('click', (e) => {
+  const r = stage.getBoundingClientRect();
+  const x = e.clientX - r.left;
+  if (x < r.width * 0.36) showPrev(); else showNext();
+});
+
+let sx = 0;
+stage.addEventListener('touchstart', e => sx = e.changedTouches[0].screenX);
+stage.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].screenX - sx;
+  if (dx > 40) showPrev(); else if (dx < -40) showNext();
+});
+window.addEventListener('keydown', e => { if (e.key === 'ArrowRight') showNext(); if (e.key === 'ArrowLeft') showPrev(); });
+
+// -----------------------------
+// 4. Visuals (Canvas & Confetti)
+// -----------------------------
+
+
+// -----------------------------
+// UI updates and celebration triggers
+// -----------------------------
+
 
 function maybeTriggerCelebration(){
   // trigger when reaching certain pages (matches your original logic)
@@ -249,6 +220,9 @@ function spawnConfettiBits(){
     });
   }
 }
+
+  
+
 
 function animLoop(){
   cancelAnimationFrame(anim);
@@ -303,6 +277,8 @@ function fireConfettiLib(){
     confetti({ particleCount: 200, spread: 100, startVelocity: 40, origin: { y: 0.6 } });
   }
 }
+
+
 
 // -----------------------------
 // Hearts (start after unlock)
@@ -372,182 +348,42 @@ function typeText(elementNode, text, speed = 60) {
 
 
 
-function floatWords(text = 'Happy Birthday Gauri 💫💖') {
-  if (!text || typeof text !== 'string') return; // safety check
-
-  const words = text.split(' ');
-  let delay = 0;
-
-  words.forEach(word => {
-    setTimeout(() => {
-      const span = document.createElement('span');
-      span.textContent = word;
-      span.className = 'floating-word';
-      span.style.left = Math.random() * 80 + 10 + 'vw';
-      span.style.top = '90vh';
-      span.style.setProperty('--rot', `${Math.random() * 40 - 20}deg`);
-      document.body.appendChild(span);
-
-      // trigger animation
-      requestAnimationFrame(() => {
-        span.classList.add('fly-up');
-      });
-
-      // remove after done
-      setTimeout(() => span.remove(), 5000);
-    }, delay);
-    delay += 600; // gap between words
-  });
-}
-
-
-/*unlockBtn.addEventListener('click', async () => {
-  const code = passInput.value.trim().toLowerCase();
-  if (code === 'vempire') {
-    wrongMsg.style.display = 'none';
-    // hide lock screen
-    lockScreen.style.display = 'none';
-    // type greeting
-    await typeText(mainMsg, 'Happy Birthday Gauri 💫💖', 60);
-    // play confetti library burst + canvas celebration + hearts
-    fireConfettiLib();
-    startCelebration();
-    floatWords('Happy Birthday Gauri 💫💖');
-   
-    startHearts();
-    // small pause to let the message be read
-    setTimeout(() => {
-      // clear typed message and open the intro/book
-      mainMsg.textContent = '';
-      // hide intro and enable book interactions
-      intro.style.display = 'none';
-      triggerFirst(); // start music attempt
-      // small launch confetti flourish
-      fireConfettiLib();
-    }, 1200);
-  } else {
-    wrongMsg.style.display = 'block';
-  }
-});*/
+// types into an element node, letter-by-letter (awaitable)
 
 
 
-unlockBtn.addEventListener('click', async () => {
-  const code = passInput.value.trim().toLowerCase();
-//  const secret = atob('YmloYXJpX3ZlbXBpcmU=');
-  const secret = atob('YmloYXJpX3ZlbXBpcmU1Njc=');
-  //YmloYXJpX3ZlbXBpcmU1Njc=
-if (code === secret) {
-  
-    wrongMsg.style.display = 'none';
-    lockScreen.style.display = 'none';
-    setTimeout(async () => {
-      await typeText(mainMsg, 'Happy Birthday Gauri 💫💖', 80);
-    }, 10000);
-    fireConfettiLib();
-    startCelebration();
-    floatWords('Happy Birthday Gauri 💫💖');
-    startHearts();
-    setTimeout(() => {
-      mainMsg.textContent = '';
-      intro.style.display = 'none';
-      triggerFirst();
-      fireConfettiLib();
-      fireConfetti();
-      startFloatingWords();
-     // startSkyShow();
-      showVampireAfterUnlock();
-      activateSecretZone();
-      ('Happy Birthday Gauri 💫💖');
-      setTimeout(async () => {
-       fireSkyWords('Happy Birthday Gauri 💫💖', 50);
-    }, 4000);
-      
-    }, 1200);
-  } else {
-    wrongMsg.style.display = 'block';
-  }
-});
 
-/*
-unlockBtn.addEventListener('click', async () => {
-  const code = passInput.value.trim().toLowerCase();
+// function floatWords(text = 'Happy Birthday Gauri5 💫💖') {
+//   if (!text || typeof text !== 'string') return; // safety check
 
-  if (code === '') {
-    wrongMsg.style.display = 'none';
-    lockScreen.style.display = 'none';
+//   const words = text.split(' ');
+//   let delay = 0;
 
-    // 🕒 1️⃣ Wait 2s, then start typing
-    setTimeout(async () => {
-      await typeText(mainMsg, 'Happy Birthday Gauri 💫💖', 80);
-    }, 2000);
+//   words.forEach(word => {
+//     setTimeout(() => {
+//       const span = document.createElement('span');
+//       span.textContent = word;
+//       span.className = 'floating-word';
+//       span.style.left = Math.random() * 80 + 10 + 'vw';
+//       span.style.top = '90vh';
+//       span.style.setProperty('--rot', `${Math.random() * 40 - 20}deg`);
+//       document.body.appendChild(span);
 
-    // 🕒 2️⃣ After 4s, start confetti + hearts
-    setTimeout(() => {
-      fireConfettiLib();
-      startCelebration();
-      startHearts();
-    }, 4000);
+//       // trigger animation
+//       requestAnimationFrame(() => {
+//         span.classList.add('fly-up');
+//       });
 
-    // 🕒 3️⃣ After 10s, launch the sky-shot floating words
-    setTimeout(() => {
-      fireSkyWords('Happy Birthday Gauri 💫💖', 450);
-    }, 0000);
-
-    // 🕒 4️⃣ After 18s, clear main message & open book
-    setTimeout(() => {
-      mainMsg.textContent = '';
-      intro.style.display = 'none';
-      triggerFirst(); // start music
-      fireConfettiLib();
-    }, 18000);
-
-  } else {
-    wrongMsg.style.display = 'block';
-  }
-});*/
+//       // remove after done
+//       setTimeout(() => span.remove(), 5000);
+//     }, delay);
+//     delay += 600; // gap between words
+//   });
+// }
 
 
-// also allow Enter key on password
-passInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') unlockBtn.click(); });
 
-// startBtn behavior: closes intro and allows music (same as unlock flow's final step)
-startBtn.addEventListener('click', ()=> {
-  intro.style.display = 'none';
-  triggerFirst();
-});
 
-// -----------------------------
-// Music toggle & first play
-// -----------------------------
-musicToggle.addEventListener('click', ()=>{
-  if (bgMusic.paused){
-    bgMusic.play().catch(()=>{});
-    musicToggle.textContent = '🔊 Music: On';
-  } else {
-    bgMusic.pause();
-    musicToggle.textContent = '🔈 Music: Off';
-  }
-});
-
-function triggerFirst(){
-  if (!musicPlayed){
-    bgMusic.play().catch(()=>{ /* may be blocked until user gesture */ });
-    musicPlayed = true;
-    musicToggle.textContent = '🔊 Music: On';
-  }
-}
-
-// -----------------------------
-// autoplay small welcome confetti (disabled at load — starts only after unlock)
-// -----------------------------
-/* nothing to run here on load */
-
-// -----------------------------
-// initial small resize + UI tune
-// -----------------------------
-resizeCanvas();
-updateUI();
 function fireConfetti() {
   if (typeof confetti === 'function') {
     const count = 10; // number of bursts
@@ -598,17 +434,18 @@ function startFloatingWords() {
   }, 15000);
 }
 
-function fireSkyWords(text) {
-  const words = text.split(" "); // split into words
-  let delay = 0;
+// function fireSkyWords(text) {
+//   const words = text.split(" "); // split into words
+//   let delay = 0;
 
-  words.forEach((word, i) => {
-    setTimeout(() => {
-      createSkyWord(word);
-    }, delay);
-    delay += 400; // small gap between each word
-  });
-}
+//   words.forEach((word, i) => {
+//     setTimeout(() => {
+//       createSkyWord(word);
+//     }, delay);
+//     delay += 400; // small gap between each word
+//   });
+// }
+
 
 
 
@@ -659,6 +496,7 @@ function fireSkyWords(sentence, gap = 450) {
   });
 }
 
+
 // auto-repeat runner (start only once)
 let _skyShowInterval = null;
 function startSkyShow(intervalMs = 15000) {
@@ -679,398 +517,34 @@ function stopSkyShow(){
 
 
 
+
+
+
+
+// -----------------------------
+// 6. Audio & Countdown
+// -----------------------------
+musicToggle.addEventListener('click', () => {
+  if (bgMusic.paused) { bgMusic.play().catch(() => { }); musicToggle.textContent = '🔊 Music: On'; }
+  else { bgMusic.pause(); musicToggle.textContent = '🔈 Music: Off'; }
+});
+
+function triggerFirst() {
+  if (!musicPlayed) {
+    bgMusic.play().catch(() => { });
+    musicPlayed = true;
+    musicToggle.textContent = '🔊 Music: On';
+  }
+}
+
+startBtn.addEventListener('click', () => {
+  intro.style.display = 'none';
+  triggerFirst();
+});
+
 function startCountdown() {
   const countdownEl = document.getElementById('countdown');
   const targetDate = new Date('April 13, 2026 00:00:00').getTime();
-
   const update = () => {
     const now = new Date().getTime();
-    const distance = targetDate - now;
-
-    if (distance <= 0) {
-      countdownEl.textContent = "🎉 It's Gauri's Day! Happy Birthday! 🎉";
-      clearInterval(interval);
-      return;
-    }
-
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    countdownEl.textContent =
-      `🎂 You are early→ ${days}d ${hours}h ${minutes}m ${seconds}s`;
-  };
-
-  update(); // first call
-  const interval = setInterval(update, 1000);
-}
-
-startCountdown();
-
-
-
-
-
-const secret = atob('YmloYXJpX3ZlbXBpcmU1Njc=');
-
-
-const messagess = [
-  "😜 Nope! Gauri’s secret is safe for now!",
-  "🤨 Wrong again? Try harder, detective!",
-  "💔 Oops! Wrong code — Gauri wouldn’t approve 😅",
-  "🧠 Error 403: Cute hacker not authorized!",
-  "💡 Hint: Think about something *special* about April 13 😉",
-  "😏 Aree... itna bhi tough nahi hai!",
-  "😂 Wrong! But nice try, Sherlock!",
-  "🙃 You can’t guess this one that easy!",
-  "🔥 Almost there! (Just kidding, you’re not.)",
-  "👀 The code isn’t your birthday either, detective!",
-  "😎 Even Google couldn’t crack this one!",
-  "🥴 Error: brain not found. Try again.",
-  "🤔 Gauri’s laughing right now… try again!",
-  "🥶 That guess was colder than Antarctica.",
-  "🕵️‍♀️ Mission failed! But style maintained 😎",
-  "🤫 It’s something that only a true friend would know.",
-  "🤣 Wrong code! But I appreciate the effort.",
-  "💬 Hint: ‘No’… or is it? 😉",
-  "🪄 Nope! This magic spell doesn’t work here.",
-  "🎭 Plot twist: every wrong guess makes Gauri smile!"
-];
-function showRandomWrongMsg() {
-  const msg = messagess[Math.floor(Math.random() * messagess.length)];
-  const wrongMsgEl = document.getElementById("wrongMsg");
-  wrongMsgEl.textContent = msg;
-  wrongMsgEl.style.display = "block";
-  wrongMsgEl.style.animation = "shake 0.4s ease";
-  setTimeout(() => (wrongMsgEl.style.animation = ""), 400);
-}
-
-// Unlock logic
-document.getElementById("unlockBtn").addEventListener("click", () => {
-  const code = document.getElementById("passInput").value.trim();
-  const wrongMsgEl = document.getElementById("wrongMsg");
-
-  if (code === secret) {
-    document.getElementById("lockScreen").style.display = "none";
-  } else {
-    showRandomWrongMsg();
-    document.getElementById("passInput").value = "";
-  }
-});
-
-
-
-
-function showVampireAfterUnlock() {
-  const secretZone = document.createElement('div');
-  secretZone.textContent = '🧛🏻‍♀️';
-  secretZone.style.position = 'fixed';
-  secretZone.style.bottom = '20px';
-  secretZone.style.right = '20px';
-  secretZone.style.fontSize = '2rem';
-  secretZone.style.cursor = 'pointer';
-  secretZone.style.transition = 'transform 0.3s ease, filter 0.3s ease';
-  secretZone.style.zIndex = '9999';
-  secretZone.style.userSelect = 'none';
-  document.body.appendChild(secretZone);
-
-  let secretClicks = 0;
-  secretZone.addEventListener('mouseenter', () => {
-    secretZone.style.filter = 'drop-shadow(0 0 6px red)';
-  });
-  secretZone.addEventListener('mouseleave', () => {
-    secretZone.style.filter = 'none';
-  });
-
-  secretZone.addEventListener('click', () => {
-    secretClicks++;
-    secretZone.style.transform = 'scale(1.3)';
-    setTimeout(() => (secretZone.style.transform = 'scale(1)'), 200);
-
-    if (secretClicks === 5) {
-      secretClicks = 0;
-      openSecretChamber();
-    }
-  });
-}
-
-// 🌌 Secret Chamber function
-function openSecretChamber() {
-  const app = document.getElementById('app');
-  const music = document.getElementById('bgMusic');
-  if (music && !music.paused) music.pause();
-
-  app.style.transition = 'opacity 1s ease';
-  app.style.opacity = '0';
-
-  // Create chamber overlay
-  const chamber = document.createElement('div');
-  chamber.id = 'secretChamber';
-  chamber.style.position = 'fixed';
-  chamber.style.inset = '0';
-  chamber.style.background = 'radial-gradient(circle at center, #0b0320 0%, #000 100%)';
-  chamber.style.display = 'flex';
-  chamber.style.flexDirection = 'column';
-  chamber.style.justifyContent = 'center';
-  chamber.style.alignItems = 'center';
-  chamber.style.textAlign = 'center';
-  chamber.style.color = '#ffd666';
-  chamber.style.fontFamily = "'Poppins', sans-serif";
-  chamber.style.zIndex = '99999';
-  chamber.style.opacity = '0';
-  chamber.style.transition = 'opacity 1s ease';
-  document.body.appendChild(chamber);
-
-  // 🌟 Stars
-  for (let i = 0; i < 100; i++) {
-    const star = document.createElement('div');
-    star.classList.add('star');
-    star.style.position = 'absolute';
-    star.style.background = 'white';
-    star.style.width = '2px';
-    star.style.height = '2px';
-    star.style.borderRadius = '50%';
-    star.style.left = Math.random() * 100 + 'vw';
-    star.style.top = Math.random() * 100 + 'vh';
-    star.style.opacity = 0.8;
-    star.style.animation = `twinkle 4s infinite ease-in-out`;
-    star.style.animationDelay = Math.random() * 4 + 's';
-    chamber.appendChild(star);
-  }
-
-  // ✨ Title and message
-  chamber.innerHTML += `
-    <h1 style="font-size:2.2em;text-shadow:0 0 10px #ffd666,0 0 30px #ff9cda;
-      animation:glowText 2s ease-in-out infinite alternate;z-index:10;">🌙</h1>
-  
-    
-   <!-- 🔘 Buttons container -->
-<div id="buttonContainer">
-  <button id="exitChamber">Return to the Book 📖</button>
-  <button id="musicToggle2">🔇 Pause Music</button>
-</div>
-    <audio id="bgMusic2" loop preload="auto">
-      <source src="gauri.mp3" type="audio/mpeg">
-    </audio>
-  `;
-
-  // Fade in chamber
-  setTimeout(() => (chamber.style.opacity = '1'), 200);
-
-  // 🎵 Music controls inside chamber
-  const bgMusic2 = document.getElementById('bgMusic2');
-  const toggleBtn2 = document.getElementById('musicToggle2');
-  bgMusic2.play().catch(() => console.warn("Tap required"));
-
-  toggleBtn2.addEventListener('click', () => {
-    if (bgMusic2.paused) {
-      bgMusic2.play();
-      toggleBtn2.textContent = "🔇 Pause Music";
-    } else {
-      bgMusic2.pause();
-      toggleBtn2.textContent = "🔊 Play Music";
-    }
-  });
-
-  // 💫 Ripple + emoji effect
-  function createMagic(x, y) {
-    const ripple = document.createElement('div');
-    ripple.classList.add('ripple');
-    ripple.style.position = 'absolute';
-    ripple.style.borderRadius = '50%';
-    ripple.style.width = '0';
-    ripple.style.height = '0';
-    ripple.style.background = 'radial-gradient(circle, rgba(255,214,102,0.6) 10%, transparent 70%)';
-    ripple.style.left = `${x}px`;
-    ripple.style.top = `${y}px`;
-    ripple.style.transform = 'translate(-50%, -50%)';
-    ripple.style.pointerEvents = 'none';
-    ripple.style.animation = 'rippleExpand 1s ease-out forwards';
-    chamber.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 1000);
-
-    const emojis = ['✨','🌙','💫','⭐','🪄'];
-    const emoji = document.createElement('div');
-    emoji.classList.add('emoji');
-    emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-    emoji.style.position = 'absolute';
-    emoji.style.left = `${x}px`;
-    emoji.style.top = `${y}px`;
-    emoji.style.fontSize = '1.8em';
-    emoji.style.pointerEvents = 'none';
-    emoji.style.animation = 'floatUp 1.5s ease-out forwards';
-    chamber.appendChild(emoji);
-    setTimeout(() => emoji.remove(), 1500);
-  }
-
-  chamber.addEventListener('click', evt => createMagic(evt.clientX, evt.clientY));
-  chamber.addEventListener('touchstart', evt => {
-    const t = evt.touches[0];
-    createMagic(t.clientX, t.clientY);
-  });
-
-  // Return button
-  document.getElementById('exitChamber').addEventListener('click', () => {
-    chamber.style.opacity = '0';
-    setTimeout(() => chamber.remove(), 800);
-    app.style.opacity = '1';
-    if (music) music.play();
-  });
-
-  // CSS Animations
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes twinkle {
-      0%,100%{opacity:0.2;transform:translateY(0);}
-      50%{opacity:1;transform:translateY(-10px);}
-    }
-    @keyframes rippleExpand {
-      to {width:200px;height:200px;opacity:0;}
-    }
-    @keyframes floatUp {
-      0%{transform:translateY(0) scale(1);opacity:1;}
-      100%{transform:translateY(-80px) scale(1.5);opacity:0;}
-    }
-    @keyframes glowText {
-      from{text-shadow:0 0 10px #ffd666;}
-      to{text-shadow:0 0 25px #ff9cda,0 0 40px #ffd666;}
-    }
-  `;
-  document.head.appendChild(style);
-}
-
-// 💡 Call this AFTER user unlocks (for example, inside your unlock success code)
-
-
-/* horrer one for opening */
-// Elements
-const openSurpriseBtn = document.getElementById("openSurpriseBtn");
-const closeSurpriseBtn = document.getElementById("closeSurpriseBtn");
-const surpriseOverlay = document.getElementById("surpriseOverlay");
-const surpriseFrame = document.getElementById("surpriseFrame");
-const parentMusic = document.getElementById("bgMusic"); // your original music
-
-openSurpriseBtn.addEventListener("click", () => {
-  // Pause parent music
-  if (parentMusic && !parentMusic.paused) parentMusic.pause();
-
-  // Load iframe
-  surpriseFrame.src = "https://bookreader1.github.io/hbd/";
-
-  // Show overlay with fade
-  surpriseOverlay.classList.add("show");
-});
-
-closeSurpriseBtn.addEventListener("click", () => {
-  // Fade out overlay
-  surpriseOverlay.classList.remove("show");
-
-  // Clear iframe after fade
-  setTimeout(() => {
-    surpriseFrame.src = "";
-  }, 500); // match CSS transition duration
-
-  // Resume parent music
-  if (parentMusic) parentMusic.play();
-});
-
-
-openSurpriseBtn.addEventListener("click", () => {
-  document.body.classList.add("no-scroll");
-  surpriseFrame.src = "https://bookreader1.github.io/hbd/";
-  surpriseOverlay.classList.add("show");
-});
-
-closeSurpriseBtn.addEventListener("click", () => {
-  surpriseOverlay.classList.remove("show");
-  setTimeout(() => surpriseFrame.src = "", 500);
-  document.body.classList.remove("no-scroll");
-  if (parentMusic) parentMusic.play();
-});
-
-
-/* horrer one button */
-// const openSurpriseBtna = document.getElementById("openSurpriseBtn");
-
-// // Hide by default (forced)
-// openSurpriseBtna.style.setProperty("display", "none", "important");
-
-// // Secret zone (top-left)
-// const secretZone = {
-//   xMax: 100,
-//   yMax: 100,
-//   clicksRequired: 5,
-//   clicks: 0,
-//   unlocked: false
-// };
-
-// document.addEventListener("click", (e) => {
-
-//   // Stop if already unlocked
-//   if (secretZone.unlocked) return;
-
-//   // Inside secret area?
-//   if (e.clientX <= secretZone.xMax && e.clientY <= secretZone.yMax) {
-//     secretZone.clicks++;
-
-//     if (secretZone.clicks === secretZone.clicksRequired) {
-
-//       // Make button PERMANENTLY visible
-//       openSurpriseBtna.style.setProperty("display", "block", "important");
-
-//       // Fade-in animation
-//       openSurpriseBtna.animate(
-//         [{ opacity: 0 }, { opacity: 1 }],
-//         { duration: 500 }
-//       );
-
-//       secretZone.unlocked = true;
-
-//       console.log("Secret Button Unlocked!");
-//     }
-//   } else {
-//     secretZone.clicks = 0; // reset
-//   }
-// });
-
-// // Safety: every 300ms force the button to stay visible after unlock
-// setInterval(() => {
-//   if (secretZone.unlocked) {
-//     openSurpriseBtna.style.setProperty("display", "block", "important");
-//   }
-// }, 300);
-
-
-function activateSecretZone() {
-  const openSurpriseBtn = document.getElementById("openSurpriseBtn");
-  openSurpriseBtn.style.display = "none"; 
-
-  const secretZone = {
-    xMax: 100,       // 100px from left
-    yMax: 100,       // 100px from bottom
-    clicksRequired: 5,
-    clicks: 0
-  };
-
-  document.addEventListener("click", function revealButton(e) {
-    const windowHeight = window.innerHeight;
-
-    // Detect click inside bottom-left secret zone
-    if (e.clientX <= secretZone.xMax && e.clientY >= windowHeight - secretZone.yMax) {
-      secretZone.clicks++;
-
-      if (secretZone.clicks === secretZone.clicksRequired) {
-        openSurpriseBtn.style.display = "block";
-        secretZone.clicks = 0;
-
-        openSurpriseBtn.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500 });
-
-        // Remove listener so it doesn't trigger again
-        document.removeEventListener("click", revealButton);
-      }
-    } else {
-      secretZone.clicks = 0;
-    }
-  });
-}
+    const distance = targe

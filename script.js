@@ -547,4 +547,339 @@ function startCountdown() {
   const targetDate = new Date('April 13, 2026 00:00:00').getTime();
   const update = () => {
     const now = new Date().getTime();
-    const distance = targe
+    const distance = targetDate - now;
+    if (distance <= 0) {
+      countdownEl.textContent = "🎉 It's Gauri's Day! Happy Birthday! 🎉";
+      clearInterval(interval); return;
+    }
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    countdownEl.textContent = `🎂 You are early→ ${days}d ${hours}h ${minutes}m ${seconds}s`;
+  };
+  update();
+  const interval = setInterval(update, 1000);
+}
+
+// -----------------------------
+// 7. Unlock & Typing
+// -----------------------------
+function typeText(elementNode, text, speed = 60) {
+  elementNode.classList.remove('show');
+  elementNode.textContent = '';
+  return new Promise(resolve => {
+    let i = 0;
+    function step() {
+      if (i < text.length) {
+        elementNode.textContent += text.charAt(i++);
+        setTimeout(step, speed);
+      } else {
+        elementNode.classList.add('show');
+        resolve();
+      }
+    }
+    step();
+  });
+}
+
+const secret = atob('YmloYXJpX3ZlbXBpcmU1Njc=');
+const messagess = [
+ "😜 Nope! Gauri’s secret is safe for now!",
+  "🤨 Wrong again? Try harder, detective!",
+  "💔 Oops! Wrong code — Gauri wouldn’t approve 😅",
+  "🧠 Error 403: Cute hacker not authorized!",
+  "💡 Hint: Think about something *special* about April 13 😉",
+  "😏 Aree... itna bhi tough nahi hai!",
+  "😂 Wrong! But nice try, Sherlock!",
+  "🙃 You can’t guess this one that easy!",
+  "🔥 Almost there! (Just kidding, you’re not.)",
+  "👀 The code isn’t your birthday either, detective!",
+  "😎 Even Google couldn’t crack this one!",
+  "🥴 Error: brain not found. Try again.",
+  "🤔 Gauri’s laughing right now… try again!",
+  "🥶 That guess was colder than Antarctica.",
+  "🕵️‍♀️ Mission failed! But style maintained 😎",
+  "🤫 It’s something that only a true friend would know.",
+  "🤣 Wrong code! But I appreciate the effort.",
+  "💬 Hint: ‘No’… or is it? 😉",
+  "🪄 Nope! This magic spell doesn’t work here.",
+  "🎭 Plot twist: every wrong guess makes Gauri smile!"
+];
+function showRandomWrongMsg() {
+  const msg = messagess[Math.floor(Math.random() * messagess.length)];
+  const wrongMsgEl = document.getElementById("wrongMsg");
+  wrongMsgEl.textContent = msg;
+  wrongMsgEl.style.display = "block";
+  wrongMsgEl.style.animation = "shake 0.4s ease";
+  setTimeout(() => (wrongMsgEl.style.animation = ""), 400);
+}
+
+// Unlock logic
+document.getElementById("unlockBtn").addEventListener("click", () => {
+  const code = document.getElementById("passInput").value.trim();
+  const wrongMsgEl = document.getElementById("wrongMsg");
+
+  if (code === secret) {
+    document.getElementById("lockScreen").style.display = "none";
+  } else {
+    showRandomWrongMsg();
+    document.getElementById("passInput").value = "";
+  }
+});
+
+
+unlockBtn.addEventListener('click', async () => {
+  const code = passInput.value.trim().toLowerCase();
+  if (code === secret) {
+    wrongMsg.style.display = 'none';
+    lockScreen.style.display = 'none';
+    setTimeout(async () => {
+      await typeText(mainMsg, 'Happy Birthday Gauri 💫💖', 80);
+    }, 10000);
+    fireConfettiLib();
+    startCelebration();
+    floatWords('Happy Birthday Gauri 💫💖');
+    startHearts();
+    setTimeout(() => {
+      mainMsg.textContent = '';
+      intro.style.display = 'none';
+      triggerFirst();
+      fireConfettiLib();
+      fireConfetti();
+      startFloatingWords();
+     // startSkyShow();
+      showVampireAfterUnlock();
+      setupHorrorSecret();
+     // activateSecretZone();
+      ('Happy Birthday Gauri 💫💖');
+      setTimeout(async () => {
+       fireSkyWords('Happy Birthday Gauri 💫💖', 50);
+    }, 4000);
+      
+    }, 1200);
+  } else {
+    wrongMsg.style.display = 'block';
+  }
+});
+
+passInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') unlockBtn.click(); });
+
+// -----------------------------
+// 8. SECRETS (Functions)
+// -----------------------------
+
+// Shared variable to remember music state
+let wasMusicPlaying = false;
+
+// --- Vampire Secret ---
+function showVampireAfterUnlock() {
+  const btn = document.createElement('div');
+  btn.textContent = '🧛🏻‍♀️';
+  btn.style.cssText = 'position:fixed; bottom:20px; right:20px; font-size:2rem; cursor:pointer; transition:transform 0.3s, filter 0.3s; z-index:9999; user-select:none;';
+  document.body.appendChild(btn);
+
+  let clicks = 0;
+  btn.addEventListener('mouseenter', () => btn.style.filter = 'drop-shadow(0 0 6px red)');
+  btn.addEventListener('mouseleave', () => btn.style.filter = 'none');
+  
+  btn.addEventListener('click', () => {
+    clicks++;
+    btn.style.transform = 'scale(1.3)';
+    setTimeout(() => (btn.style.transform = 'scale(1)'), 200);
+    if (clicks === 5) {
+      clicks = 0;
+      openSecretChamber();
+    }
+  });
+}
+
+function openSecretChamber() {
+  const app = document.getElementById('app') || document.body;
+  
+  // Save state and pause
+  wasMusicPlaying = !bgMusic.paused;
+  if (wasMusicPlaying) bgMusic.pause();
+
+  app.style.transition = 'opacity 1s ease';
+  app.style.opacity = '0';
+
+  const chamber = document.createElement('div');
+  chamber.id = 'secretChamber';
+  chamber.style.cssText = 'position:fixed; inset:0; background:radial-gradient(circle at center, #0b0320 0%, #000 100%); display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; color:#ffd666; font-family:"Poppins", sans-serif; z-index:99999; opacity:0; transition:opacity 1s ease;';
+  document.body.appendChild(chamber);
+
+  chamber.innerHTML = `
+    <h1 style="font-size:2.2em;text-shadow:0 0 10px #ffd666; animation:glowText 2s infinite alternate;">🌙</h1>
+    <div id="buttonContainer">
+      <button id="exitChamber">Return to the Book 📖</button>
+      <button id="musicToggle2">🔇 Pause Music</button>
+    </div>
+    <audio id="bgMusic2" loop preload="auto"><source src="gauri.mp3" type="audio/mpeg"></audio>
+  `;
+
+  for (let i = 0; i < 100; i++) {
+    const star = document.createElement('div');
+    star.classList.add('star');
+    star.style.cssText = `position:absolute; background:white; width:2px; height:2px; border-radius:50%; left:${Math.random()*100}vw; top:${Math.random()*100}vh; opacity:0.8; animation:twinkle 4s infinite ease-in-out; animation-delay:${Math.random()*4}s`;
+    chamber.appendChild(star);
+  }
+
+  setTimeout(() => (chamber.style.opacity = '1'), 200);
+
+  const bgMusic2 = document.getElementById('bgMusic2');
+  const toggleBtn2 = document.getElementById('musicToggle2');
+  bgMusic2.play().catch(() => {});
+
+  toggleBtn2.addEventListener('click', () => {
+    if (bgMusic2.paused) { bgMusic2.play(); toggleBtn2.textContent = "🔇 Pause Music"; }
+    else { bgMusic2.pause(); toggleBtn2.textContent = "🔊 Play Music"; }
+  });
+
+  function createMagic(x, y) {
+    const ripple = document.createElement('div');
+    ripple.classList.add('ripple');
+    ripple.style.cssText = `position:absolute; border-radius:50%; width:0; height:0; background:radial-gradient(circle, rgba(255,214,102,0.6) 10%, transparent 70%); left:${x}px; top:${y}px; transform:translate(-50%, -50%); pointer-events:none; animation:rippleExpand 1s ease-out forwards;`;
+    chamber.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 1000);
+
+    const emojis = ['✨','🌙','💫','⭐','🪄'];
+    const emoji = document.createElement('div');
+    emoji.classList.add('emoji');
+    emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    emoji.style.cssText = `position:absolute; left:${x}px; top:${y}px; font-size:1.8em; pointer-events:none; animation:floatUp 1.5s ease-out forwards;`;
+    chamber.appendChild(emoji);
+    setTimeout(() => emoji.remove(), 1500);
+  }
+
+  chamber.addEventListener('click', evt => createMagic(evt.clientX, evt.clientY));
+  chamber.addEventListener('touchstart', evt => {
+    const t = evt.touches[0];
+    createMagic(t.clientX, t.clientY);
+  });
+
+  document.getElementById('exitChamber').addEventListener('click', () => {
+    bgMusic2.pause();
+    chamber.style.opacity = '0';
+    setTimeout(() => chamber.remove(), 800);
+    app.style.opacity = '1';
+    
+    // Resume ONLY if it was playing before
+    if (wasMusicPlaying) bgMusic.play();
+  });
+}
+
+// --- Cake Secret (Top-Left) ---
+function setupCakeSecret() {
+  const cakeBtn = document.getElementById("openCakeBtn");
+  const closeBtn = document.getElementById("closeSurpriseBtn");
+  const overlay = document.getElementById("surpriseOverlay");
+  const frame = document.getElementById("surpriseFrame");
+  
+  cakeBtn.style.display = "none";
+  cakeBtn.style.opacity = "0";
+  cakeBtn.style.pointerEvents = "none";
+
+  let secretClicks = 0;
+  let hideTimeout = null;
+  const SECRET_SIZE = 120; 
+
+  document.addEventListener("click", (e) => {
+    if (e.clientX <= SECRET_SIZE && e.clientY <= SECRET_SIZE) {
+      secretClicks++;
+      if (secretClicks === 5) {
+        cakeBtn.style.display = "block";
+        cakeBtn.style.opacity = "1";
+        cakeBtn.style.pointerEvents = "auto";
+        cakeBtn.animate([{ opacity: 0, transform: "scale(0.85)" }, { opacity: 1, transform: "scale(1)" }], { duration: 350, fill: "forwards" });
+        
+        clearTimeout(hideTimeout);
+        hideTimeout = setTimeout(() => {
+          cakeBtn.style.opacity = "0";
+          cakeBtn.style.pointerEvents = "none";
+          setTimeout(() => cakeBtn.style.display = "none", 300);
+          secretClicks = 0;
+        }, 5000);
+      }
+    } else {
+      secretClicks = 0;
+    }
+  });
+
+  cakeBtn.addEventListener("click", () => {
+    cakeBtn.style.display = "none";
+    
+    // Save state and pause
+    wasMusicPlaying = !bgMusic.paused;
+    if (wasMusicPlaying) bgMusic.pause();
+
+    frame.src = "https://bookreader1.github.io/Cake/";
+    overlay.classList.add("show");
+    document.body.classList.add("no-scroll");
+  });
+
+  // Shared close for both secrets
+  closeBtn.addEventListener("click", () => {
+    overlay.classList.remove("show");
+    document.body.classList.remove("no-scroll");
+    setTimeout(() => frame.src = "", 500);
+    
+    // Resume ONLY if it was playing before
+    if (wasMusicPlaying) bgMusic.play();
+  });
+}
+
+// --- Horror Secret (Bottom-Left) ---
+function setupHorrorSecret() {
+  const openSurpriseBtn = document.getElementById("openSurpriseBtn");
+  const surpriseOverlay = document.getElementById("surpriseOverlay");
+  const surpriseFrame = document.getElementById("surpriseFrame");
+
+  openSurpriseBtn.style.display = "none";
+  const secretZone = { xMax: 100, yMax: 100, clicksRequired: 5, clicks: 0 };
+
+  document.addEventListener("click", function revealButton(e) {
+    if (e.clientX <= secretZone.xMax && e.clientY >= window.innerHeight - secretZone.yMax) {
+      secretZone.clicks++;
+      if (secretZone.clicks === secretZone.clicksRequired) {
+        openSurpriseBtn.style.display = "block";
+        secretZone.clicks = 0;
+        openSurpriseBtn.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500 });
+        document.removeEventListener("click", revealButton);
+      }
+    } else {
+      secretZone.clicks = 0;
+    }
+  });
+
+  openSurpriseBtn.addEventListener("click", () => {
+    // Save state and pause
+    wasMusicPlaying = !bgMusic.paused;
+    if (wasMusicPlaying) bgMusic.pause();
+
+    document.body.classList.add("no-scroll");
+    surpriseFrame.src = "https://bookreader1.github.io/hbd/";
+    surpriseOverlay.classList.add("show");
+  });
+}
+
+// -----------------------------
+// 9. Init & Extra CSS
+// -----------------------------
+applyToInner(slides[0], frontInner);
+applyToInner(slides[1], backInner);
+updateUI();
+resizeCanvas();
+startCountdown();
+
+setupCakeSecret();
+//setupHorrorSecret();
+
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes twinkle { 0%,100%{opacity:0.2;transform:translateY(0);} 50%{opacity:1;transform:translateY(-10px);} }
+  @keyframes rippleExpand { to {width:200px;height:200px;opacity:0;} }
+  @keyframes floatUp { 0%{transform:translateY(0) scale(1);opacity:1;} 100%{transform:translateY(-80px) scale(1.5);opacity:0;} }
+  @keyframes glowText { from{text-shadow:0 0 10px #ffd666;} to{text-shadow:0 0 25px #ff9cda,0 0 40px #ffd666;} }
+`;
+document.head.appendChild(style);

@@ -883,3 +883,156 @@ style.textContent = `
   @keyframes glowText { from{text-shadow:0 0 10px #ffd666;} to{text-shadow:0 0 25px #ff9cda,0 0 40px #ffd666;} }
 `;
 document.head.appendChild(style);
+
+
+
+
+
+/* ===============================
+   CONFIG
+================================ */
+// Set this to TRUE while testing to force logs every refresh
+const DEBUG_MODE = true; 
+
+const LOG_URL_ADVANCE = "https://script.google.com/macros/s/AKfycbyzfBrB8UvnX1YsA_H8WY7bGkKGdF8mieb8wl2g0q8CVCJngyeu79RZZSdiq-kboSi3Mw/exec";
+
+/* ===============================
+   UTILS
+================================ */
+function safeValue(v) {
+  return v !== null && v !== undefined ? v : "null";
+}
+
+function getSessionId() {
+  let id = sessionStorage.getItem("sessionId");
+  if (!id) {
+    id = "sess-" + Math.random().toString(36).slice(2, 11);
+    sessionStorage.setItem("sessionId", id);
+  }
+  return id;
+}
+
+function getFirstVisit() {
+  let fv = localStorage.getItem("firstVisit");
+  if (!fv) {
+    fv = new Date().toISOString();
+    localStorage.setItem("firstVisit", fv);
+  }
+  return fv;
+}
+
+/* ===============================
+   GEO (With Timeout Safety)
+================================ */
+async function getGeoOnce() {
+  const cached = sessionStorage.getItem("geo");
+  if (cached) return JSON.parse(cached);
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 sec timeout
+
+    const res = await fetch("https://ipapi.co/json/", { signal: controller.signal });
+    clearTimeout(timeoutId);
+    
+    const g = await res.json();
+    const geo = {
+      country: g.country_name || "null",
+      region: g.region || "null",
+      city: g.city || "null",
+      isp: g.org || "null"
+    };
+
+    sessionStorage.setItem("geo", JSON.stringify(geo));
+    return geo;
+  } catch (err) {
+    return { country: "null", region: "null", city: "null", isp: "null" };
+  }
+}
+
+/* ===============================
+   CORE LOGGER
+================================ */
+function logEvent(data = {}) {
+  const payload = {
+    sessionId: safeValue(data.sessionId),
+    event: safeValue(data.event),
+    page: safeValue(data.page),
+    referrer: safeValue(data.referrer),
+    firstVisit: safeValue(data.firstVisit),
+    sessionDuration: "null", // <--- FORCE NULL
+    device: safeValue(data.device),
+    os: safeValue(data.os),
+    browser: safeValue(data.browser),
+    screen: safeValue(data.screen),
+    language: safeValue(data.language),
+    darkMode: safeValue(data.darkMode),
+    timezone: safeValue(data.timezone),
+    country: safeValue(data.country),
+    region: safeValue(data.region),
+    city: safeValue(data.city),
+    isp: safeValue(data.isp),
+    extra: safeValue(data.extra)
+  };
+
+  fetch(LOG_URL_ADVANCE, {
+    method: "POST",
+    redirect: "follow",
+    keepalive: true,
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  }).then(() => {
+    if(DEBUG_MODE) console.log("Data sent to Sheet:", data.event);
+  }).catch(err => console.error("Log Error:", err));
+}
+
+/* ===============================
+   VISIT — LOG ONCE ONLY
+================================ */
+(async () => {
+  // If NOT in debug mode, check the flag.
+  if (!DEBUG_MODE && sessionStorage.getItem("visitLogged")) return;
+  
+  sessionStorage.setItem("visitLogged", "1");
+
+  const geo = await getGeoOnce();
+
+  (async () => {
+  if (!DEBUG_MODE && sessionStorage.getItem("visitLogged")) return;
+  sessionStorage.setItem("visitLogged", "1");
+
+  await event_name("visit");
+})();
+
+})();
+
+
+async function buildBaseContext(extra = {}) {
+  const geo = await getGeoOnce();
+
+  return {
+    sessionId: getSessionId(),
+    page: location.href,
+    referrer: document.referrer,
+    firstVisit: getFirstVisit(),
+    device: navigator.userAgent,
+    os: navigator.platform,
+    browser: navigator.appVersion,
+    screen: `${screen.width}x${screen.height}`,
+    language: navigator.language,
+    darkMode: window.matchMedia("(prefers-color-scheme: dark)").matches,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    ...geo,
+    extra
+  };
+}
+
+async function event_name(event, extra = {}) {
+  const context = await buildBaseContext(extra);
+
+  logEvent({
+    event,
+    ...context
+  });
+}
+

@@ -658,6 +658,7 @@ unlockBtn.addEventListener('click', async () => {
     }, 4000);
       
     }, 1200);
+    event_name("password_unlocked");
   } else {
     wrongMsg.style.display = 'block';
   }
@@ -696,7 +697,7 @@ function showVampireAfterUnlock() {
 
 function openSecretChamber() {
   const app = document.getElementById('app') || document.body;
-  
+  event_name("Inside secret chamber");
   // Save state and pause
   wasMusicPlaying = !bgMusic.paused;
   if (wasMusicPlaying) bgMusic.pause();
@@ -816,6 +817,7 @@ function setupCakeSecret() {
     frame.src = "https://bookreader1.github.io/Cake/";
     overlay.classList.add("show");
     document.body.classList.add("no-scroll");
+    event_name("Cake window");
   });
 
   // Shared close for both secrets
@@ -860,6 +862,7 @@ function setupHorrorSecret() {
     document.body.classList.add("no-scroll");
     surpriseFrame.src = "https://bookreader1.github.io/hbd/";
     surpriseOverlay.classList.add("show");
+    event_name("horror window");
   });
 }
 
@@ -1036,3 +1039,21 @@ async function event_name(event, extra = {}) {
   });
 }
 
+/*
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return; // not a button
+  event_name("button_click", { 
+    buttonId: btn.id || "no-id", 
+    buttonClass: btn.className || "no-class",
+    buttonText: btn.innerText || ""
+  });
+});*/
+
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return; // Ignore non-buttons
+
+  const btnInfo = `${btn.id || "no-id"} (${btn.innerText || ""})`;
+  event_name(`button_click — ${btnInfo}`);
+});

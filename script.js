@@ -887,9 +887,36 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
+/* ===============================
+   basic log
+================================ */
 
 
 
+const LOG_URL = "https://script.google.com/macros/s/AKfycbzOTsXz8t-YUvSwoVZK32SzaUFDVGQTW6YRx1w1OrJev0QjGkjTiInh5yVHQmTfkS4/exec";
+
+function logVisit(eventName = "page_open") {
+  fetch(LOG_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      page: location.href,
+      referrer: document.referrer,
+      userAgent: navigator.userAgent,
+      event: eventName
+    })
+  }).catch(() => {});
+
+
+}
+
+
+window.addEventListener("load", () => {
+  logVisit("page_loaded");
+});
 
 /* ===============================
    CONFIG

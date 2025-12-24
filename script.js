@@ -100,6 +100,7 @@ function applyToInner(slide, inner) {
 
 function updateUI() {
   progress.textContent = `${index + 1} / ${slides.length}`;
+  
   if (index === 0) sectionHead.textContent = 'Intro';
   else if (index >= 1 && index <= 12) sectionHead.textContent = 'Vempire ✨';
   else if (index >= 13 && index <= 24) sectionHead.textContent = 'Gauri ✨';
@@ -138,6 +139,26 @@ cardWrap.addEventListener('transitionend', (ev) => {
       applyToInner(slides[index], frontInner);
       applyToInner(slides[(index + 1) % slides.length], backInner);
     }
+
+/**
+ * 
+ * 
+ * HERE RISK CODE
+ * 
+ */
+
+ event_name("card_view", {
+      cardIndex: index,
+      cardTitle: slides[index].title
+    });
+    /**
+     * 
+     * 
+     * 
+     * 
+     * 
+     */
+
     cardWrap.style.transition = 'none';
     cardWrap.classList.remove('flipped');
     void cardWrap.offsetWidth;
@@ -615,6 +636,28 @@ function showRandomWrongMsg() {
   setTimeout(() => (wrongMsgEl.style.animation = ""), 400);
 }
 
+
+
+/**********************************************************************************
+ * ********************************************************************************
+ * stictt
+ */
+
+const unlockBtn_k = document.getElementById("unlockBtn");
+const passInput_k = document.getElementById("passInput");
+
+unlockBtn.addEventListener("click", () => {
+  const passwordValue = passInput.value.trim();
+
+  event_name("password_attempt", {
+    inputId: passInput_k.id,
+    value: passwordValue,  // ✅ Correct
+    length: passwordValue.length
+  });
+});
+
+
+
 // Unlock logic
 document.getElementById("unlockBtn").addEventListener("click", () => {
   const code = document.getElementById("passInput").value.trim();
@@ -1012,7 +1055,7 @@ function logEvent(data = {}) {
     headers: { "Content-Type": "text/plain;charset=utf-8" },
     body: JSON.stringify(payload)
   }).then(() => {
-    if(DEBUG_MODE) console.log("Data sent to Sheet:", data.event);
+    //if(DEBUG_MODE) console.log("Data sent to Sheet:", data.event);
   }).catch(err => console.error("Log Error:", err));
 }
 
@@ -1084,3 +1127,23 @@ document.addEventListener("click", (e) => {
   const btnInfo = `${btn.id || "no-id"} (${btn.innerText || ""})`;
   event_name(`button_click — ${btnInfo}`);
 });
+
+
+if(navigator.connection){
+  event_name("network_info", {
+    effectiveType: navigator.connection.effectiveType,
+    downlink: navigator.connection.downlink
+  });
+}
+
+
+
+
+function trackCardOpen(index, title, theme) {
+  event_name("card_open", {
+    cardIndex: index,
+    title,
+    theme
+  });
+}
+

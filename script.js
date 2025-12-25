@@ -604,7 +604,8 @@ function typeText(elementNode, text, speed = 60) {
   });
 }
 
-const secret = atob('YmloYXJpX3ZlbXBpcmU1Njc=');
+//const secret = atob('YmloYXJpX3ZlbXBpcmU1Njc=');
+const secret = atob('dGVtcDIwMDM=')
 const messagess = [
  "😜 Nope! Gauri’s secret is safe for now!",
   "🤨 Wrong again? Try harder, detective!",

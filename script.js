@@ -605,7 +605,8 @@ function typeText(elementNode, text, speed = 60) {
 }
 
 //const secret = atob('YmloYXJpX3ZlbXBpcmU1Njc=');
-const secret = atob('dGVtcDIwMDM=')
+//const secret = atob('dGVtcDIwMDM=')
+const secret = atob('a2lydGFuX2tpX2Rvc3RfaHU=');
 const messagess = [
  "😜 Nope! Gauri’s secret is safe for now!",
   "🤨 Wrong again? Try harder, detective!",
@@ -732,7 +733,7 @@ function showVampireAfterUnlock() {
     clicks++;
     btn.style.transform = 'scale(1.3)';
     setTimeout(() => (btn.style.transform = 'scale(1)'), 200);
-    if (clicks === 5) {
+    if (clicks === 2) {
       clicks = 0;
       openSecretChamber();
     }
@@ -832,7 +833,7 @@ function setupCakeSecret() {
   document.addEventListener("click", (e) => {
     if (e.clientX <= SECRET_SIZE && e.clientY <= SECRET_SIZE) {
       secretClicks++;
-      if (secretClicks === 5) {
+      if (secretClicks === 2) {
         cakeBtn.style.display = "block";
         cakeBtn.style.opacity = "1";
         cakeBtn.style.pointerEvents = "auto";
@@ -882,7 +883,7 @@ function setupHorrorSecret() {
   const surpriseFrame = document.getElementById("surpriseFrame");
 
   openSurpriseBtn.style.display = "none";
-  const secretZone = { xMax: 100, yMax: 100, clicksRequired: 5, clicks: 0 };
+  const secretZone = { xMax: 100, yMax: 100, clicksRequired: 2, clicks: 0 };
 
   document.addEventListener("click", function revealButton(e) {
     if (e.clientX <= secretZone.xMax && e.clientY >= window.innerHeight - secretZone.yMax) {

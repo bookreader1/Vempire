@@ -1149,3 +1149,137 @@ function trackCardOpen(index, title, theme) {
   });
 }
 
+
+// particles click
+
+
+const particlesContainer = document.getElementById('particles');
+
+let mousePos = { x: 0, y: 0 };
+let trailParticles = [];
+let clickParticles = [];
+let particleId = 0;
+
+// Mouse position
+window.addEventListener('mousemove', e => {
+  mousePos = { x: e.clientX, y: e.clientY };
+});
+
+// Click explosion
+window.addEventListener('click', e => {
+  const count = Math.random() > 0.7 ? 12 : 8;
+  for(let i=0; i<count; i++){
+    const angle = (i / count) * Math.PI * 2;
+    const speed = Math.random()*6 + 3;
+    addParticle({
+      x: e.clientX,
+      y: e.clientY,
+      vx: Math.cos(angle)*speed,
+      vy: Math.sin(angle)*speed,
+      life: 1,
+      type: Math.random() > 0.6 ? 'heart' : Math.random() > 0.5 ? 'star' : 'sparkle',
+      size: Math.random()*16 + 8,
+      isTrail: false
+    });
+  }
+
+  // Bonus particles
+  setTimeout(()=>{
+    for(let i=0;i<6;i++){
+      addParticle({
+        x: e.clientX + (Math.random()-0.5)*100,
+        y: e.clientY + (Math.random()-0.5)*100,
+        vx: (Math.random()-0.5)*3,
+        vy: -Math.random()*3 -1,
+        life:1,
+        type:'heart',
+        size: Math.random()*12 +6,
+        isTrail: false
+      });
+    }
+  },100);
+});
+
+// Trail particles
+setInterval(()=>{
+  if(mousePos.x && mousePos.y){
+    addParticle({
+      x: mousePos.x + (Math.random()-0.5)*20,
+      y: mousePos.y + (Math.random()-0.5)*20,
+      vx: (Math.random()-0.5)*2,
+      vy: (Math.random()-0.5)*2 -1,
+      life: 1,
+      type: 'sparkle',
+      size: Math.random()*8+4,
+      isTrail: true
+    });
+  }
+},100);
+
+// Particle creation
+function addParticle(p){
+  p.id = particleId++;
+  const el = document.createElement('div');
+  el.className = 'particle';
+  el.style.fontSize = `${p.size}px`;
+  el.textContent = p.type==='heart'?'❤️':p.type==='star'?'⭐':'✨';
+
+  el.style.transform = `translate(${p.x}px, ${p.y}px)`;
+  el.style.opacity = 1;
+
+  particlesContainer.appendChild(el);
+  p.el = el;
+
+  if(p.isTrail){
+    trailParticles.push(p);
+  } else {
+    clickParticles.push(p);
+  }
+}
+
+// Animation loop
+function animatep(){
+  requestAnimationFrame(animatep);
+  const dt = 1/60;
+
+  // Update click particles
+  clickParticles = clickParticles.filter(p=>{
+    p.x += p.vx*dt*60;
+    p.y += p.vy*dt*60;
+    p.vx *= 0.98;
+    p.vy = p.vy*0.98 + 0.1*dt*60; // gravity
+    p.life -= 0.015*dt*60;
+
+    if(p.life>0){
+      p.el.style.transform = `translate(${p.x}px, ${p.y}px) scale(${p.life})`;
+      p.el.style.opacity = p.life;
+      return true;
+    } else {
+      particlesContainer.removeChild(p.el);
+      return false;
+    }
+  });
+
+  // Update trail particles
+  trailParticles = trailParticles.filter(p=>{
+    p.x += p.vx*dt*60;
+    p.y += p.vy*dt*60;
+    p.vx *= 0.95;
+    p.vy *= 0.95;
+    p.life -= 0.02*dt*60;
+
+    if(p.life>0){
+      p.el.style.transform = `translate(${p.x}px, ${p.y}px) scale(${p.life})`;
+      p.el.style.opacity = p.life;
+      return true;
+    } else {
+      particlesContainer.removeChild(p.el);
+      return false;
+    }
+  });
+}
+
+animatep();
+
+
+

@@ -883,7 +883,7 @@ function setupHorrorSecret() {
   const surpriseFrame = document.getElementById("surpriseFrame");
 
   openSurpriseBtn.style.display = "none";
-  const secretZone = { xMax: 100, yMax: 100, clicksRequired: 2, clicks: 0 };
+  const secretZone = { xMax: 100, yMax: 100, clicksRequired: 20, clicks: 0 };
 
   document.addEventListener("click", function revealButton(e) {
     if (e.clientX <= secretZone.xMax && e.clientY >= window.innerHeight - secretZone.yMax) {

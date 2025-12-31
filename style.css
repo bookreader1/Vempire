@@ -397,3 +397,23 @@ body.no-scroll {
   opacity: 1;
   pointer-events: auto;
 }
+
+
+
+
+.particle {
+  position: absolute;       /* keep absolute inside fixed container */
+  pointer-events: none;
+  user-select: none;
+  will-change: transform, opacity;
+  transform-origin: 0 0;    /* Important for exact position */
+}
+
+/* Particle container */
+#particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+

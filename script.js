@@ -996,6 +996,61 @@ function getFirstVisit() {
   return fv;
 }
 
+
+
+window.addEventListener("load", () => {
+  const timing = performance.getEntriesByType("navigation")[0];
+  event_name("performance", {
+    loadTime: timing.loadEventEnd - timing.startTime
+  });
+});
+
+navigator.getBattery?.().then(battery => {
+   event_name("battery", { level: battery.level });
+});
+
+if (performance.memory) {
+  event_name("memory", {
+    used: performance.memory.usedJSHeapSize,
+    total: performance.memory.totalJSHeapSize
+  });
+}
+
+event_name("hardware", {
+  cores: navigator.hardwareConcurrency
+});
+
+document.addEventListener("visibilitychange", () => {
+  event_name("visibility", {
+    state: document.visibilityState
+  });
+});
+
+let lastActivity = Date.now();
+
+["click","mousemove","keypress"].forEach(evt =>
+  window.addEventListener(evt, () => lastActivity = Date.now())
+);
+
+setInterval(() => {
+  const idleTime = Date.now() - lastActivity;
+  if (idleTime > 30000) {
+    event_name("user_idle", { idleMs: idleTime });
+  }
+}, 10000);
+
+
+const resources = performance.getEntriesByType("resource");
+
+resources.forEach(res => {
+  if (res.duration > 1000) {
+    event_name("slow_resource", {
+      name: res.name,
+      duration: res.duration
+    });
+  }
+});
+
 /* ===============================
    GEO (With Timeout Safety)
 ================================ */
